@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"strings"
 	"booking-app/helper"
+	"fmt"
+	"strconv"
 )
 
 var conferenceName = "Go Conference"
@@ -11,7 +11,7 @@ var conferenceName = "Go Conference"
 const conferenceTickets = 100
 
 var remainingTickets uint = 50
-var bookings = []string{}
+var bookings = make([]map[string]string,0)
 
 // App entry point
 func main() {
@@ -65,9 +65,7 @@ func getFirstNames() []string {
 
 	// _ is a blank identifier
 	for _, booking := range bookings {
-
-		var names = strings.Fields(booking)
-		firstNames = append(firstNames, names[0])
+		firstNames = append(firstNames, booking["firstName"])
 	}
 
 	return firstNames
@@ -99,7 +97,18 @@ func getUserInput() (string, string, string, uint) {
 
 func bookTickets(userTickets uint, firstName string, lastName string, email string) {
 	remainingTickets = remainingTickets - userTickets
-	bookings = append(bookings, firstName+" "+lastName)
+
+	//create a map for a user
+	var userData = make(map[string]string);
+
+	userData["firstName"] = firstName;
+	userData["lastName"] = lastName;
+	userData["email"] = email;
+	userData["numberOfTickets"] = strconv.FormatUint(uint64(userTickets), 10);
+
+
+	bookings = append(bookings, userData)
+	fmt.Printf("List of bookings is %v\n", bookings);
 
 	fmt.Printf("Thank you %v %v, you have booked %v tickets for the %v conference. A confirmation email will be sent to %v\n", firstName, lastName, userTickets, conferenceName, email)
 	fmt.Printf("There are now %v tickets  for %v\n", remainingTickets, conferenceName)
